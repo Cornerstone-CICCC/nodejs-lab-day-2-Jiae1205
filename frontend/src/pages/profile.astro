@@ -1,0 +1,63 @@
+---
+import Nav from "../components/Nav.astro";
+---
+<html lang="en">
+  <head><meta charset="utf-8" /><title>Profile</title></head>
+  <body>
+    <Nav />
+    <h1>Profile</h1>
+
+    <div id="content">Loading...</div>
+    <button id="logoutBtn" style="display:none;">Logout</button>
+
+    <script>
+      async function loadProfile() {
+        try {
+          const res = await fetch("http://localhost:4500/check-auth", {
+            method: "GET",
+            credentials: "include"
+          });
+
+          const data = await res.json();
+
+          if (!data.ok) {
+            window.location.href = "/login";
+            return;
+          }
+
+          const user = data.user;
+          const contentEl = document.getElementById("content");
+          const logoutBtn = document.getElementById("logoutBtn");
+
+          if (contentEl && logoutBtn) {
+            contentEl.innerHTML = `
+              <p><strong>Username</strong>: ${user.username}</p>
+              <p><strong>First name</strong>: ${user.firstname}</p>
+              <p><strong>Last name</strong>: ${user.lastname}</p>
+            `;
+            logoutBtn.style.display = "inline-block";
+          }
+        } catch {
+          window.location.href = "/login";
+        }
+      }
+
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      if (logoutBtn instanceof HTMLElement) {
+        logoutBtn.addEventListener("click", async () => {
+          try {
+            await fetch("http://localhost:4500/logout", {
+              method: "GET",
+              credentials: "include"
+            });
+          } finally {
+            window.location.href = "/login";
+          }
+        });
+      }
+
+      loadProfile();
+    </script>
+  </body>
+</html>

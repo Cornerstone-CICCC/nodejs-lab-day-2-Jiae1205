@@ -1,0 +1,9 @@
+---
+const here = Astro.url.pathname;
+---
+<nav style="display:flex; gap:1rem; padding:.75rem 0;">
+  <a href="/login" style={here==="/login"?"font-weight:700":""}>Login</a>
+  <a href="/register" style={here==="/register"?"font-weight:700":""}>Register</a>
+  <a href="/profile" style={here==="/profile"?"font-weight:700":""}>Profile</a>
+</nav>
+<hr />
